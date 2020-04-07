@@ -83,6 +83,35 @@ class Board:
         row = chess_coord[0]
         col = chess_coord[1]
         # print("move cord  row",row," col ",col)
+        if piece.king:
+            piece.clastling = [False,False]
+            if abs(col - piece.col) == 2:
+                if piece.color == 'w':
+                    l = 7
+                else:
+                    l = 0
+
+                if col > piece.col:
+                    p = self.board[l][7]
+                    self.board[l][5] = p
+                    self.board[l][7] = 0
+                    p.row = l
+                    p.col = 5
+                else:
+                    p = self.board[l][0]
+                    self.board[l][3] = p
+                    self.board[l][0] = 0
+                    p.row = l
+                    p.col = 3
+        if piece.rook:
+            if piece.row == 0 and piece.col == 0:
+                self.board[0][4].clastling[1] = False
+            if piece.row == 0 and piece.col == 7:
+                self.board[0][4].clastling[0] = False
+            if piece.row == 7 and piece.col == 0:
+                self.board[7][4].clastling[1] = False
+            if piece.row == 7 and piece.col == 7:
+                self.board[7][4].clastling[0] = False
         self.board[row][col] = piece
         self.board[piece.row][piece.col] = 0
         piece.row = row
@@ -129,7 +158,7 @@ class Board:
         for i in range(8):
             for j in range(8):
                 if self.board[i][j] != 0:
-                    if self.board[i][j].color != color:
+                    if self.board[i][j].color != color and not self.board[i][j].king:
                         for move in self.board[i][j].update_move(self):
                             danger.append(move)
         

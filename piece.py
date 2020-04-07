@@ -40,8 +40,10 @@ class Piece:
         self.color = color
         self.move_list = []
         self.selected = False
+        self.rook = False
         self.king = False
         self.pawn = False
+        
 
     def isSelected(self):
         return self.selected
@@ -73,12 +75,13 @@ class King(Piece):
     def __init__(self, row, col, color):
         super().__init__(row, col, color)
         self.king = True
+        self.clastling = [True,True]
 
     def move(self,board):
         row = self.row
         col = self.col
         moves = []
-
+        f = []
         try:
             #up
             if row > 0:
@@ -141,11 +144,28 @@ class King(Piece):
                     moves.append((row + 1,col + 1))
                 elif p.color != self.color:
                     moves.append((row + 1,col + 1))
+            
+            danger = board.danger_move(self.color)
+            check,k = board.is_check()
+            
+            for i in moves:
+                if i not in danger:
+                    f.append(i)
+            if self.clastling[0]:
+                print("in")
+                if board.board[row][col+1] == 0 and board.board[row][col+2] == 0 and not check and board.board[row][7] != 0 and (row,col+1) not in danger and (row,col+1) not in danger:
+                    print("in1")
+                    f.append((row,col+2))
+            #queen side
+            if self.clastling[1]:
+                if board.board[row][col-1] == 0 and board.board[row][col-2] == 0 and board.board[row][col-3] == 0 and not check and board.board[row][0] != 0 and (row,col-1) not in danger and (row,col-2) not in danger:
+                    f.append((row,col-2))
 
         except:
-            pass     
-        # print(f"pice : row {row}  col {col}")
-        return moves
+            pass
+       
+
+        return f
     
 
     
@@ -453,7 +473,10 @@ class Knight(Piece):
 
 class Rook(Piece):
     img = 5
-
+    def __init__(self, row, col, color):
+        super().__init__(row, col, color)
+        self.rook = True
+        
     def move(self,board):
         row = self.row
         col = self.col

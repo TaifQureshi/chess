@@ -37,12 +37,7 @@ while not gameEnded:
                 
                 if board.turn == piece.color:
                     piece.selected = True
-                    if piece.king:
-                        for i in piece.update_move(board):
-                            if i not in board.danger_move(board.turn):
-                                move.append(i)
-                    else:
-                        move = piece.update_move(board)
+                    move = piece.update_move(board)
                     if piece.selected:
                         if event.type ==  pygame.MOUSEBUTTONDOWN:
                             pos1 = pygame.mouse.get_pos()
